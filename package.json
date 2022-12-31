@@ -1,10 +1,29 @@
 {
-  "name": "nestjs-s3",
+  "name": "@prachyot/nestjs-s3",
   "version": "0.0.1",
   "description": "",
-  "author": "",
-  "private": true,
-  "license": "UNLICENSED",
+  "author": "Prach Yothaprasert <prach@oozou.com>",
+  "private": false,
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "main": "dist/index.js",
+  "files": [
+    "dist/**/*",
+    "*.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PrachYot/nestjs-s3"
+  },
+  "bugs": "https://github.com/PrachYot/nestjs-s3",
+  "keywords": [
+    "nestjs",
+    "aws",
+    "s3"
+  ],
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
@@ -24,6 +43,7 @@
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
     "@nestjs/platform-express": "^8.0.0",
+    "aws-sdk": "^2.1286.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"
