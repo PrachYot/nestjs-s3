@@ -1,4 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as AWS from 'aws-sdk';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -8,9 +9,11 @@ export class S3Service {
   private awsS3;
   private oneYearCacheAge = 31536000;
 
-  constructor() {
-    const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
-    const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+  constructor(private configService: ConfigService) {
+    const accessKeyId = this.configService.get<string>('AWS_ACCESS_KEY_ID');
+    const secretAccessKey = this.configService.get<string>(
+      'AWS_SECRET_ACCESS_KEY',
+    );
 
     console.log({
       accessKeyId,
