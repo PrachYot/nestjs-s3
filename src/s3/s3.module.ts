@@ -1,6 +1,7 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { S3Service } from './s3.service';
+import { S3ModuleAsyncOptions, S3ModuleOptions } from './s3.interface';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { S3Service } from './s3.service';
   exports: [S3Service],
 })
 export class S3Module {
-  static register(options: { envFilePath: string }): DynamicModule {
+  static forRoot(options: S3ModuleOptions): DynamicModule {
     const envPath = options.envFilePath || '.env';
 
     return {
@@ -22,7 +23,29 @@ export class S3Module {
           envFilePath: [envPath],
         }),
       ],
-      providers: [S3Service],
+      providers: [
+        {
+          provide: 'S3_CONFIG_OPTIONS',
+          useValue: options,
+        },
+        S3Service,
+      ],
+      exports: [S3Service],
+    };
+  }
+
+  static forRootAsync(options: S3ModuleAsyncOptions): DynamicModule {
+    return {
+      module: S3Module,
+      imports: options.imports,
+      providers: [
+        {
+          provide: 'S3_CONFIG_OPTIONS',
+          useFactory: options.useFactory,
+          inject: options.inject,
+        },
+        S3Service,
+      ],
       exports: [S3Service],
     };
   }

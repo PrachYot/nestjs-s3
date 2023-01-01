@@ -15,11 +15,6 @@ export class S3Service {
       'AWS_SECRET_ACCESS_KEY',
     );
 
-    console.log({
-      accessKeyId,
-      secretAccessKey,
-    });
-
     this.awsS3 = new AWS.S3({
       accessKeyId,
       secretAccessKey,
@@ -30,11 +25,11 @@ export class S3Service {
     return this.awsS3;
   }
 
-  async uploadImage(
+  async uploadFile(
     bucketName: string,
     dir: string,
     fileName: string,
-    oneYearCacheAge = this.oneYearCacheAge,
+    cacheAge = this.oneYearCacheAge,
   ): Promise<string> {
     let imageUrl = '';
 
@@ -44,7 +39,7 @@ export class S3Service {
           Bucket: bucketName,
           Key: fileName,
           Body: fs.readFileSync(path.join(dir, fileName)),
-          CacheControl: `max-age=${oneYearCacheAge}`,
+          CacheControl: `max-age=${cacheAge}`,
         })
         .promise();
 

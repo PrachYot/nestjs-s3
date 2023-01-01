@@ -1,73 +1,110 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+# S3 Module
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A NestJS module to provide a S3 client and a S3 service for your application.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Implementation purpose
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+1. Reduce project setup time
+2. Reduce project onboarding time
+3. Help lean your base project
 
 ## Installation
 
-```bash
-$ npm install
+```sh
+yarn add @prachyot/nestjs-s3
 ```
 
-## Running the app
+## Usage
 
-```bash
-# development
-$ npm run start
+Add these new variable to your `.env` file
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```sh
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
 ```
 
-## Test
+Import the module in your AppModule
 
-```bash
-# unit tests
-$ npm run test
+```ts
+import { S3Module } from '@prachyot/nestjs-s3';
+...
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+@Module({
+  imports: [
+    S3Module
+    ...
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
 ```
 
-## Support
+You can change the default configuration by passing an object to the forRoot method
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```ts
+import { S3Module } from '@prachyot/nestjs-s3';
+...
 
-## Stay in touch
+@Module({
+  imports: [
+    S3Module.forRoot({
+      envFilePath: '.env.local' // Change the path to your env file
+    })
+    ...
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Or you can use `forRootAsync` method to pass a factory function
 
-## License
+```ts
+import { S3Module } from '@prachyot/nestjs-s3';
+...
 
-Nest is [MIT licensed](LICENSE).
+@Module({
+  imports: [
+    S3Module.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        return {
+          accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
+          secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
+        }
+      }
+    })
+    ...
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+```
+
+## Service method specification
+
+```ts
+// Method: s3
+// Description: Returns an instance of the S3 client
+
+this.s3Service.s3();
+```
+
+```ts
+/*
+ * Method: uploadFile
+ * Description: Uploads a file to S3
+ *
+ * @Params:
+ * bucketName: string
+ * dir: string
+ * fileName: string
+ * cacheAge: number (optional) (default: 31536000) (1 year)
+ */
+
+await this.uploadFile('my-bucket', 'src/assets', 'my-file.png');
+```
