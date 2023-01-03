@@ -1,6 +1,6 @@
 {
   "name": "@prachyot/nestjs-s3",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "",
   "author": "Prach Yothaprasert <prach@oozou.com>",
   "private": false,

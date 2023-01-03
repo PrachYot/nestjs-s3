@@ -72,8 +72,7 @@ import { S3Module } from '@prachyot/nestjs-s3';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         return {
-          accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
-          secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
+          envFilePath: configService.get('ENV_FILE_PATH'),
         }
       }
     })
