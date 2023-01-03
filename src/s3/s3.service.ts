@@ -50,4 +50,10 @@ export class S3Service {
 
     return imageUrl;
   }
+
+  // TODO: Implement uploadFiles
+
+  // TODO: Implement downloadFile
+
+  // TODO: Implement downloadFiles
 }
